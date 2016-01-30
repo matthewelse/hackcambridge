@@ -1,0 +1,11 @@
+{
+  "name": "hackcambridgeble",
+  "version": "0.0.0",
+  "bin": "./source",
+  "private": true,
+  "author": "",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "ble": "^2.5.1"
+  }
+}
