@@ -23,6 +23,14 @@ class ConnectionScene: SKScene {
     }
     
     override func mouseDown(theEvent: NSEvent) {
+        
+    }
+    
+    override func keyDown(theEvent: NSEvent) {
+        print(theEvent.keyCode)
+        if theEvent.keyCode == 11 {
+            self.view?.presentScene(PongScene(size:self.view!.bounds.size))
+        }
     }
     
     override func update(currentTime: CFTimeInterval) {

@@ -27,6 +27,9 @@ class PongScene: SKScene {
     var scorer = 0;
     
     var leftLabel: SKLabelNode?
+    
+    var scoreltext: SKLabelNode?
+    var scorertext: SKLabelNode?
 
     override func didMoveToView(view: SKView) {
         /* Setup your scene here */
@@ -44,6 +47,20 @@ class PongScene: SKScene {
         leftLabel!.position = CGPoint(x: 50.0, y: 0.0)
         
         self.addChild(leftLabel!)
+        
+        scoreltext = SKLabelNode(fontNamed:"American Typewriter")
+        scoreltext!.text = "0"
+        scoreltext!.fontSize = 30
+        scoreltext!.position = CGPoint(x: CGRectGetMidX(self.frame) - 50.0, y: CGRectGetMaxY(self.frame) - 50)
+        
+        self.addChild(scoreltext!)
+        
+        scorertext = SKLabelNode(fontNamed:"American Typewriter")
+        scorertext!.text = "0"
+        scorertext!.fontSize = 30
+        scorertext!.position = CGPoint(x: CGRectGetMidX(self.frame) + 50.0, y: CGRectGetMaxY(self.frame) - 50)
+        
+        self.addChild(scorertext!)
         
         
         rightPaddle = SKShapeNode(rectOfSize: CGSize(width: 30, height: 100))
@@ -106,10 +123,12 @@ class PongScene: SKScene {
             // collision with the left wall...
             ballvX = -ballvX
             scorer++;
+            scorertext!.text = String(scorer)
         } else if ball!.position.x >= frame.width - (ball!.frame.width / 2) {
             // collision with the right wall...
             ballvX = -ballvX
             scorel++;
+            scoreltext!.text = String(scorel)
         }
         
         if ball!.position.y <= (ball!.frame.height / 2) {
