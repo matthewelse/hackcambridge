@@ -3,7 +3,7 @@
 //  ArmPong
 //
 //  Created by Matthew Else on 30/01/2016.
-//  Copyright (c) 2016 Corpus/King's Hackathon Team. All rights reserved.
+//  Copyright (c) 2016 Corpus/King's Hack Cambridge Team. All rights reserved.
 //
 
 import SpriteKit
@@ -20,13 +20,24 @@ class PongScene: SKScene {
     
     var ball: SKShapeNode?
     
-    var ballvX: Float = 0.00001
-    var ballvY: Float = 0.00001
+    var ballvX: Float = 0.0005
+    var ballvY: Float = 0.0005
     
     
     var ldy = 0.0
     var rdy = 0.0
     
+    var scorel = 0;
+    var scorer = 0;
+    
+    var ldownthreshold = 0;
+    var rdownthreshold = 0;
+    
+    var lupthreshold = 0;
+    var rupthreshold = 0;
+    
+    var leftLabel: SKLabelNode?
+
     override func didMoveToView(view: SKView) {
         /* Setup your scene here */
         self.backgroundColor = NSColor(calibratedRed: 0.24, green: 0.24, blue: 0.28, alpha: 1.0)
@@ -36,6 +47,13 @@ class PongScene: SKScene {
         leftPaddle?.position = CGPoint(x:0, y:CGRectGetMidY(self.frame))
         
         self.addChild(leftPaddle!)
+        
+        leftLabel = SKLabelNode(fontNamed:"American Typewriter")
+        leftLabel!.text = "0000"
+        leftLabel!.fontSize = 30
+        leftLabel!.position = CGPoint(x: 50.0, y: 0.0)
+        
+        self.addChild(leftLabel!)
         
         
         rightPaddle = SKShapeNode(rectOfSize: CGSize(width: 30, height: 100))
@@ -52,7 +70,7 @@ class PongScene: SKScene {
     }
     
     override func keyDown(theEvent: NSEvent) {
-        print(theEvent.keyCode)
+
         if theEvent.keyCode == 125 {
             // move something upwards
             ldy = -5.0
@@ -91,16 +109,17 @@ class PongScene: SKScene {
         // check collision status with the paddles
         
         if ball!.position.x <= leftPaddle!.frame.width && within(Float(ball!.position.y), low: Float(leftPaddle!.position.y) - Float(leftPaddle!.frame.height) / 2.0, high: Float(leftPaddle!.position.y) + Float(leftPaddle!.frame.height) / 2) {
-            print("collision (left)")
             ballvX = -ballvX
         } else if ball!.position.x >= frame.width - rightPaddle!.frame.width && within(Float(ball!.position.y), low: Float(rightPaddle!.position.y) - Float(rightPaddle!.frame.height) / 2.0, high: Float(rightPaddle!.position.y) + Float(rightPaddle!.frame.height) / 2) {
             ballvX = -ballvX
         } else if ball!.position.x <= (ball!.frame.width / 2) {
-            // collision with the left
+            // collision with the left wall...
             ballvX = -ballvX
+            scorer++;
         } else if ball!.position.x >= frame.width - (ball!.frame.width / 2) {
-            // collision with the right
+            // collision with the right wall...
             ballvX = -ballvX
+            scorel++;
         }
         
         if ball!.position.y <= (ball!.frame.height / 2) {
@@ -126,9 +145,48 @@ class PongScene: SKScene {
         }
     }
     
+    func checkThreshold(value: Int, up: Int, down: Int) -> Double {
+        if up > down {
+            // >up -> up, <down -> down
+            return value > up ? +1 : value < down ? -1 : 0;
+        } else {
+            // <up -> up, >down -> down
+            return value < up ? +1 : value > down ? -1 : 0;
+        }
+    }
     
-    func handleAdcValue(value: Int) {
-
+    func handleAdcValues(valuel: Int, valuer: Int) {
+//        ldy = checkThreshold(valuel, up: lupthreshold, down: ldownthreshold)
+  
+        self.leftLabel!.text = String(valuel);
         
+        if valuel > 545 {
+            ldy = 2.0
+        } else if valuel < 540 {
+            ldy = -2.0;
+        } else {
+            ldy = 0.0;
+        }
+        
+        //print(ldy < 0 ? "left up " : ldy > 0 ?"left down" : "left stationary")
+        
+        //rdy = checkThreshold(valuer, up: rupthreshold, down: rdownthreshold)
+        
+//        print(rdy < 0 ? "right up " : rdy > 0 ? "right down" : "right stationary")
+    }
+    
+    func setLMinMaxValues(tensemin: Int, tensemax: Int, relaxmin: Int, relaxmax: Int) {
+//        if tensemin > relaxmax {
+//            // tensemax tensemin relaxmax relaxmin
+//            lupthreshold = tensemin
+//            ldownthreshold = relaxmax
+//        } else if relaxmin > tensemax {
+//            // relaxmax relaxmin tensemax tensemin
+//            
+//            lupthreshold = relaxmin
+//            ldownthreshold = tensemax
+//        } else {
+//            print("ooooops!!!!")
+//        }
     }
 }

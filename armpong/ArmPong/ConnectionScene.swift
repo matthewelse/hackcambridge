@@ -3,7 +3,7 @@
 //  ArmPong
 //
 //  Created by Matthew Else on 30/01/2016.
-//  Copyright © 2016 Corpus/King's Hackathon Team. All rights reserved.
+//  Copyright (c) 2016 Corpus/King's Hack Cambridge Team. All rights reserved.
 //
 
 import Foundation

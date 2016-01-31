@@ -1,9 +1,10 @@
+
 //
 //  AppDelegate.swift
 //  ArmPong
 //
 //  Created by Matthew Else on 30/01/2016.
-//  Copyright (c) 2016 Corpus/King's Hackathon Team. All rights reserved.
+//  Copyright (c) 2016 Corpus/King's Hack Cambridge Team. All rights reserved.
 //
 
 
@@ -26,7 +27,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, CBCentralManagerDelegate, CB
         centralManager = CBCentralManager(delegate: self, queue: dispatch_get_main_queue())
         
         /* Pick a size for the scene */
-        let scene = PongScene(size:self.skView.bounds.size)
+        let scene = ConnectionScene(size:self.skView.bounds.size)
         
         scene.scaleMode = .AspectFill
         self.skView!.presentScene(scene)
@@ -46,12 +47,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, CBCentralManagerDelegate, CB
     func centralManager(central: CBCentralManager, didConnectPeripheral peripheral: CBPeripheral) {
         print("connected!")
         
-//        calibrationScene = CalibrationScene(size:self.skView.bounds.size)
-//        self.skView.presentScene(calibrationScene)
-
-        self.skView.presentScene(PongScene(size:self.skView.bounds.size))
+        calibrationScene = CalibrationScene(size:self.skView.bounds.size)
+        self.skView.presentScene(calibrationScene)
         
-        //peripheral.discoverServices(nil)
+        peripheral.discoverServices(nil)
     }
     
     func centralManager(central: CBCentralManager, didDiscoverPeripheral peripheral: CBPeripheral, advertisementData: [String : AnyObject], RSSI: NSNumber) {
@@ -99,12 +98,14 @@ class AppDelegate: NSObject, NSApplicationDelegate, CBCentralManagerDelegate, CB
         if (characteristic.UUID == CBUUID(string: "fffe")) {
             // updated the adc characteristic
             
-            let adcval = getADCData(characteristic)
+            let (ladc, radc) = getADCData(characteristic)
             
             /* handle the adc value in the current scene. */
             if let calibScene = calibrationScene {
-                calibScene.handleAdcValue(adcval)
+                calibScene.handleAdcValue(ladc, valuer: radc)
             }
+            
+            
         } else {
             print("received notification from another characteristic")
             print(characteristic.UUID);
@@ -124,7 +125,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, CBCentralManagerDelegate, CB
         }
     }
     
-    func getADCData(characteristic: CBCharacteristic) -> Int {
+    func getADCData(characteristic: CBCharacteristic) -> (Int, Int) {
         let data = characteristic.value
         
         let count = data!.length / sizeof(UInt8)
@@ -135,8 +136,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, CBCentralManagerDelegate, CB
         // copy bytes into array
         data!.getBytes(&array, length:count * sizeof(UInt8))
         
-        // get a 16-bit number out of the array (little-endian)
+        // get a 16-bit number out of the array (big-endian for some reason...)
         
-        return Int(array[0]) + Int(array[1]) << 8;
+        let a = Int(array[0]) + Int(array[1]) << 8
+        let b = Int(array[2]) + Int(array[3]) << 8
+        
+        return (a, b)
     }
 }
