@@ -1,5 +1,5 @@
 /* HackCambridge Project
- * 
+ *
  * Something to do with some home-made ECG sensors, with BLE
  * and stuff like that...
  *
@@ -60,7 +60,7 @@ void onConnection(const Gap::ConnectionCallbackParams_t *params) {
 void getSensorValue() {
     // do some ADC stuff...
     // this will be called from a callback
-    
+
     uint16_t a0_value = a0.read_u16();
     uint16_t a1_value = a1.read_u16();
 
@@ -73,7 +73,7 @@ void getSensorValue() {
     partial_s_a0 += a0_value;
     partial_s_a1 += a1_value;
 
-    position++; 
+    position++;
 
     //printf("partial sum: %d\r\n", partial_s);
 
@@ -83,24 +83,24 @@ void getSensorValue() {
     }
 
     if (complete == 1) {
-        // take the average of the points in the 
+        // take the average of the points in the
         adc_value = partial_s_a0 >> 4;
         adc_value |= (partial_s_a1 >> 4) << 16;
 
         //printf("writing: 0x%x\r\n", adc_value);
-        BLE::Instance().gattServer().write(adcChar->getValueHandle(), (uint8_t *)&adc_value, sizeof(adc_value)); 
-    } 
+        BLE::Instance().gattServer().write(adcChar->getValueHandle(), (uint8_t *)&adc_value, sizeof(adc_value));
+    }
 }
 
 void heartbeat() {
-    led1 = !led1; 
+    led1 = !led1;
 }
 
 void afterInit(BLE::InitializationCompleteCallbackContext *ctxt) {
     // make a pretty LED flash.
-    printf("setting up the led callbacks\r\n"); 
+    printf("setting up the led callbacks\r\n");
     minar::Scheduler::postCallback(getSensorValue).period(minar::milliseconds(20));
-    
+
     BLE& ble_device = ctxt->ble;
 
     ble_device.gap().onConnection(onConnection);
@@ -114,7 +114,7 @@ void afterInit(BLE::InitializationCompleteCallbackContext *ctxt) {
         free(adcServ);
     }
 
-    // initialise the custom ADC service 
+    // initialise the custom ADC service
     adcChar = new GattCharacteristic(ADC_VALUE_CHAR_UUID, (uint8_t*)&adc_value, sizeof(adc_value), sizeof(adc_value), GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_NOTIFY | GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_READ);
     GattCharacteristic *adcChars[] = { adcChar };
     adcServ = new GattService(ADC_SERVICE_UUID, adcChars, 1);
@@ -143,7 +143,7 @@ void afterInit(BLE::InitializationCompleteCallbackContext *ctxt) {
 void app_start(int, char**) {
     minar::Scheduler::postCallback(heartbeat).period(minar::milliseconds(500));
     // schedule a callback to make sure we know it's working...
-    printf("initialising\r\n");    
+    printf("initialising\r\n");
     // BLE is now a singleton class, so do it this way
     BLE::Instance().init(afterInit);
 }

@@ -82,7 +82,6 @@ class CalibrationScene: SKScene {
             instructionLabel!.text = "Finished"
             pongScene = PongScene(size:self.view!.bounds.size)
             
-//            pongScene!.setLMinMaxValues(tenseMin!, tensemax: tenseMax!, relaxmin: relaxMin!, relaxmax: relaxMax!)
             self.view!.presentScene(pongScene)
         }
     }
@@ -128,8 +127,6 @@ class CalibrationScene: SKScene {
                 calibrationState! = .Finished
                 
                 pongScene = PongScene(size:self.view!.bounds.size)
-                
-                pongScene!.setLMinMaxValues(tenseMin!, tensemax: tenseMax!, relaxmin: relaxMin!, relaxmax: relaxMax!)
                 
                 self.view!.presentScene(pongScene)
             case .Finished:

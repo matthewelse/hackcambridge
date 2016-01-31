@@ -11,10 +11,6 @@ import CoreBluetooth
 
 class PongScene: SKScene {
     
-    // do some hysteresis?
-    var upThreshold = 0
-    var downThreshold = 0
-    
     var leftPaddle: SKShapeNode?
     var rightPaddle: SKShapeNode?
     
@@ -29,12 +25,6 @@ class PongScene: SKScene {
     
     var scorel = 0;
     var scorer = 0;
-    
-    var ldownthreshold = 0;
-    var rdownthreshold = 0;
-    
-    var lupthreshold = 0;
-    var rupthreshold = 0;
     
     var leftLabel: SKLabelNode?
 
@@ -156,10 +146,9 @@ class PongScene: SKScene {
     }
     
     func handleAdcValues(valuel: Int, valuer: Int) {
-//        ldy = checkThreshold(valuel, up: lupthreshold, down: ldownthreshold)
-  
         self.leftLabel!.text = String(valuel);
         
+        // some hard-coded values for Elena.
         if valuel > 545 {
             ldy = 2.0
         } else if valuel < 540 {
@@ -168,25 +157,5 @@ class PongScene: SKScene {
             ldy = 0.0;
         }
         
-        //print(ldy < 0 ? "left up " : ldy > 0 ?"left down" : "left stationary")
-        
-        //rdy = checkThreshold(valuer, up: rupthreshold, down: rdownthreshold)
-        
-//        print(rdy < 0 ? "right up " : rdy > 0 ? "right down" : "right stationary")
-    }
-    
-    func setLMinMaxValues(tensemin: Int, tensemax: Int, relaxmin: Int, relaxmax: Int) {
-//        if tensemin > relaxmax {
-//            // tensemax tensemin relaxmax relaxmin
-//            lupthreshold = tensemin
-//            ldownthreshold = relaxmax
-//        } else if relaxmin > tensemax {
-//            // relaxmax relaxmin tensemax tensemin
-//            
-//            lupthreshold = relaxmin
-//            ldownthreshold = tensemax
-//        } else {
-//            print("ooooops!!!!")
-//        }
     }
 }
