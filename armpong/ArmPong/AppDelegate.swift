@@ -108,7 +108,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, CBCentralManagerDelegate, CB
             
         } else {
             print("received notification from another characteristic")
-            print(characteristic.UUID);
+            print(characteristic.UUID)
         }
     }
     

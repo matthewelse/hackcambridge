@@ -39,8 +39,8 @@ static uint32_t       adc_value = 0x00000000;
 GattCharacteristic *adcChar;
 GattService *adcServ;
 
-uint16_t dataPointsA1[16];
-uint16_t dataPointsA0[16];
+uint16_t dataPointsA1[1];
+uint16_t dataPointsA0[1];
 
 uint16_t position = 0;
 uint16_t partial_s_a0 = 0;
@@ -77,15 +77,15 @@ void getSensorValue() {
 
     //printf("partial sum: %d\r\n", partial_s);
 
-    if (position >= 16) {
+    if (position >= 1) {
         position = 0;
         complete = 1;
     }
 
     if (complete == 1) {
         // take the average of the points in the
-        adc_value = partial_s_a0 >> 4;
-        adc_value |= (partial_s_a1 >> 4) << 16;
+            adc_value = partial_s_a0 >> 0;
+        adc_value |= (partial_s_a1 >> 0) << 16;
 
         //printf("writing: 0x%x\r\n", adc_value);
         BLE::Instance().gattServer().write(adcChar->getValueHandle(), (uint8_t *)&adc_value, sizeof(adc_value));

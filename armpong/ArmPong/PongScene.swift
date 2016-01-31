@@ -16,17 +16,18 @@ class PongScene: SKScene {
     
     var ball: SKShapeNode?
     
-    var ballvX: Float = 0.0005
-    var ballvY: Float = 0.0005
+    var ballvX: Float = 0.0002
+    var ballvY: Float = 0.0002
     
     
     var ldy = 0.0
     var rdy = 0.0
     
-    var scorel = 0;
-    var scorer = 0;
+    var scorel = 0
+    var scorer = 0
     
     var leftLabel: SKLabelNode?
+    var rightLabel: SKLabelNode?
     
     var scoreltext: SKLabelNode?
     var scorertext: SKLabelNode?
@@ -47,6 +48,13 @@ class PongScene: SKScene {
         leftLabel!.position = CGPoint(x: 50.0, y: 0.0)
         
         self.addChild(leftLabel!)
+
+        rightLabel = SKLabelNode(fontNamed:"American Typewriter")
+        rightLabel!.text = "0000"
+        rightLabel!.fontSize = 30
+        rightLabel!.position = CGPoint(x: self.frame.width - 50.0, y: 0.0)
+        
+        self.addChild(rightLabel!)
         
         scoreltext = SKLabelNode(fontNamed:"American Typewriter")
         scoreltext!.text = "0"
@@ -122,12 +130,12 @@ class PongScene: SKScene {
         } else if ball!.position.x <= (ball!.frame.width / 2) {
             // collision with the left wall...
             ballvX = -ballvX
-            scorer++;
+            scorer++
             scorertext!.text = String(scorer)
         } else if ball!.position.x >= frame.width - (ball!.frame.width / 2) {
             // collision with the right wall...
             ballvX = -ballvX
-            scorel++;
+            scorel++
             scoreltext!.text = String(scorel)
         }
         
@@ -157,24 +165,35 @@ class PongScene: SKScene {
     func checkThreshold(value: Int, up: Int, down: Int) -> Double {
         if up > down {
             // >up -> up, <down -> down
-            return value > up ? +1 : value < down ? -1 : 0;
+            return value > up ? +1 : value < down ? -1 : 0
         } else {
             // <up -> up, >down -> down
-            return value < up ? +1 : value > down ? -1 : 0;
+            return value < up ? +1 : value > down ? -1 : 0
         }
     }
     
     func handleAdcValues(valuel: Int, valuer: Int) {
-        self.leftLabel!.text = String(valuel);
+        self.leftLabel!.text = String(valuel)
+        self.rightLabel!.text = String(valuer)
         
-        // some hard-coded values for Elena.
-        if valuel > 545 {
-            ldy = 2.0
-        } else if valuel < 540 {
-            ldy = -2.0;
+        var leftThresh = 432
+        // some hard-coded values for lewis.
+        if valuel > leftThresh {
+            ldy = min(Float(7.0), Float(valuel - leftThresh))
+        } else if valuel < 432 {
+            ldy = -7.0
         } else {
-            ldy = 0.0;
+            ldy = 0.0
         }
         
+        // some hard-coded values for elena
+        
+        if valuer > 380 {
+            rdy = 7.0
+        } else if valuer < 380 {
+            rdy = -7.0
+        } else {
+            rdy = 0.0
+        }
     }
 }

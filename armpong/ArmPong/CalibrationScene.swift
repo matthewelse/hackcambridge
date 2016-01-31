@@ -141,8 +141,8 @@ class CalibrationScene: SKScene {
     func handleAdcValue(valuel: Int, valuer: Int) {
         // we can use this to calibrate it
         
-        self.leftLabel!.text = String(valuel);
-        self.rightLabel!.text = String(valuer);
+        self.leftLabel!.text = String(valuel)
+        self.rightLabel!.text = String(valuer)
         
         switch calibrationState! {
         case .Tense:
